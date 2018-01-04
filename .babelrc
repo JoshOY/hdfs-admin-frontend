@@ -1,17 +1,17 @@
 {
   "presets": [
     "env",
-    "stage-0",
-    "react"
+    "react",
+    "stage-0"
   ],
   "plugins": [
+    "transform-decorators-legacy",
+    "lodash",
     [
       "import", {
         "libraryName": "antd",
         "style": true
       }
-    ],
-    "lodash",
-    "transform-decorators-legacy"
+    ]
   ]
 }
