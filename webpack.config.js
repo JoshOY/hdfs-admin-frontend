@@ -155,7 +155,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      ui: root('app'),
+      'app': root('app'),
     },
   },
   plugins: [

@@ -5,8 +5,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 // views
 import MainView from '../view/Main';
-import RelationView from '../view/Relation';
-import SelftradingView from '../view/Selftrading';
+
 
 @inject('routingStore')
 @observer
@@ -25,8 +24,8 @@ class AppRoutes extends React.Component {
     return (
       <Switch location={this.props.routingStore.location}>
         <Route path="/" exact component={MainView} />
-        <Route path="/relations" exact component={RelationView} />
-        <Route path="/selftrading" exact component={SelftradingView} />
+        {/*<Route path="/relations" exact component={RelationView} />*/}
+        {/*<Route path="/selftrading" exact component={SelftradingView} />*/}
       </Switch>
     );
   }
