@@ -1,6 +1,8 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import _ from 'lodash';
+
+import FSPanel from './FSPanel.jsx';
+import FSTable from './FSTable.jsx';
 
 @inject((allStores) => ({
   mainStore: allStores.mainStore,
@@ -9,12 +11,15 @@ import _ from 'lodash';
 class FSView extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   render() {
     return (
-      <div>FS-VIEW PLACEHOLDER</div>
+      <div>
+        <FSPanel />
+        <FSTable />
+      </div>
     );
   }
 }
