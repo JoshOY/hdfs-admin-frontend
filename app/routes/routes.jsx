@@ -5,7 +5,8 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 // views
 import MainView from '../view/Main';
-
+import OverviewView from '../view/OverviewView';
+import FSView from '../view/FSView';
 
 @inject('routingStore')
 @observer
@@ -23,9 +24,12 @@ class AppRoutes extends React.Component {
   render() {
     return (
       <Switch location={this.props.routingStore.location}>
-        <Route path="/" exact component={MainView} />
-        {/*<Route path="/relations" exact component={RelationView} />*/}
-        {/*<Route path="/selftrading" exact component={SelftradingView} />*/}
+        <Route path="/">
+          <MainView location={this.props.routingStore.location.pathname}>
+            <Route path="/" exact component={OverviewView} />
+            <Route path="/fs" exact component={FSView} />
+          </MainView>
+        </Route>
       </Switch>
     );
   }

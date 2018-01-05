@@ -123,3 +123,10 @@ modules.xml
 *.ipr
 
 # End of https://www.gitignore.io/api/webstorm+iml
+
+## dist
+!dist/.gitkeep
+dist/*.html
+dist/*.js
+dist/*.css
+dist/resource
