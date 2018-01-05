@@ -65,8 +65,17 @@ class MainView extends React.Component {
     return breadcrumbItems;
   };
 
+  _getMenuSelectedKeys = () => {
+    const { location } = this.props;
+    if (location.pathname.match('/fs')) {
+      return ['fs'];
+    }
+    return ['overview'];
+  };
+
   render() {
-    const { mainStore } = this.props;
+    // const { mainStore } = this.props;
+    const menuSelectedKeys = this._getMenuSelectedKeys();
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
@@ -80,7 +89,7 @@ class MainView extends React.Component {
               alt="hadoop-logo"
             />
           </div>
-          <Menu theme="dark" defaultSelectedKeys={['overview']} mode="inline">
+          <Menu theme="dark" selectedKeys={menuSelectedKeys} mode="inline">
             <Menu.Item key="overview">
               <Link to="/">
                 <Icon type="pie-chart" />
