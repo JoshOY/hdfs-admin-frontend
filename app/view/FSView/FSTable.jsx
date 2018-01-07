@@ -9,9 +9,20 @@ import FileSysStore from "app/store/FileSysStore";
 const renderFileName = (txt, record) => {
   const filename = record.name;
   if (record.isFile === false) {
-    return (<span style={{ color: '#1890ff' }}><Icon type="folder" />&nbsp;&nbsp;{filename}</span>);
+    const forwardUrl = '/fs?path=' + record.path.match(/hdfs:\/\/(.+):([0-9]+)(\/.*)/)[3];
+    return (
+      <span style={{ color: '#1890ff' }}>
+        <a href={forwardUrl}>
+          <Icon type="folder" />&nbsp;&nbsp;{filename}
+        </a>
+      </span>
+    );
   }
-  return (<span style={{ color: '#1890ff' }}><Icon type="file" />&nbsp;&nbsp;{filename}</span>);
+  return (
+    <span>
+      <Icon type="file" />&nbsp;&nbsp;{filename}
+    </span>
+  );
 };
 
 const renderModTime = (txt, record) => {
@@ -87,6 +98,7 @@ class FSView extends React.Component {
         dataSource={fileSysStore.filesInDirectory}
         columns={FSView.getColumns(this)}
         rowKey={(record) => record.path}
+        loading={fileSysStore.currentPathIsLoading}
       />
     );
   }

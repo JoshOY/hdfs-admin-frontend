@@ -35,7 +35,7 @@ class MainView extends React.Component {
     );
     // console.log('this.props.mainStore.breadcrumbPath =', this.props.mainStore.breadcrumbPath[0]);
     // console.log('nextProps.mainStore.breadcrumbPath =', nextProps.mainStore.breadcrumbPath[0]);
-    console.log('update flag =', flag);
+    // console.log('update flag =', flag);
     return flag;
   }
 
@@ -51,15 +51,15 @@ class MainView extends React.Component {
       const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
       return (
         <Breadcrumb.Item key={url}>
-          <Link to={url}>
+          <a href={url}>
             {breadcrumbNameMap[url]}
-          </Link>
+          </a>
         </Breadcrumb.Item>
       );
     });
     const breadcrumbItems = [(
       <Breadcrumb.Item key="HDFS">
-        <Link to="/">HDFS Home</Link>
+        <a href="/">HDFS Home</a>
       </Breadcrumb.Item>
     )].concat(extraBreadcrumbItems);
     return breadcrumbItems;

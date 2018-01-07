@@ -7,6 +7,7 @@ class FileSysStore {
 
   /* Current directory */
   @observable currentPath = '/';
+  @observable currentPathIsLoading = false;
   /* directory view records (for go previous / go forward) */
   @observable _previousViews = [];
   @observable _forwardViews = [];
@@ -31,10 +32,12 @@ class FileSysStore {
   }
 
   @action fetchDirectoryAsync = async (path) => {
+    this.currentPathIsLoading = true;
     const respObj = await ApiUtil.tokenGet(
       '/api/fs/getDirectoryFromHdfs',
       { path },
     );
+    this.currentPathIsLoading = false;
     if (respObj.errCode) {
       throw new Error(respObj);
     }
@@ -44,7 +47,7 @@ class FileSysStore {
       return this._filesInDirectory;
     }
     // if success
-    message.success('Directory load success.');
+    // message.success('Directory load success.');
     this._filesInDirectory = respObj.directories;
     return this._filesInDirectory;
   };
