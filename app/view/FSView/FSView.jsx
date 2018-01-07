@@ -6,12 +6,17 @@ import FSTable from './FSTable.jsx';
 
 @inject((allStores) => ({
   mainStore: allStores.mainStore,
+  fileSysStore: allStores.fileSysStore,
 }))
 @observer
 class FSView extends React.Component {
 
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.props.fileSysStore.fetchDirectoryAsync('/');
   }
 
   render() {
