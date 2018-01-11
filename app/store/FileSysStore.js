@@ -19,12 +19,12 @@ class FileSysStore {
     if (this.currentPath === '/') {
       return null;
     }
-    const paths = this.currentPath.split('/');
+    let paths = this.currentPath.split('/');
     if (_.last(paths) === '') {
-      _.dropRight(paths);
+      paths = _.dropRight(paths);
     }
-    _.dropRight(paths);
-    return paths.join('/');
+    paths =_.dropRight(paths);
+    return paths.join('/') + '/';
   }
 
   @computed get filesInDirectory() {

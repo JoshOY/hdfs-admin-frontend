@@ -11,11 +11,6 @@ function root(fn) {
 function main() {
   const app = express();
 
-  // parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
-  // parse application/json
-  app.use(bodyParser.json());
-
   app.use('/public', express.static(root('dist'), {
     dotfiles: 'ignore',
   }));
@@ -37,6 +32,11 @@ function main() {
       return ret;
     },
   }));
+
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // parse application/json
+  app.use(bodyParser.json());
 
   app.use('/', (req, res) => {
     res.sendFile(root('dist/index.html'));

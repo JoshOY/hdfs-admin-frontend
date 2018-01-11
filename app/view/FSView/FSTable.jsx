@@ -1,10 +1,13 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Table, Icon, Button } from 'antd';
+import { Table, Icon, Button, Popconfirm, message } from 'antd';
 import filesize from 'filesize';
 import moment from 'moment';
+
 import _ from 'lodash';
+
 import FileSysStore from "app/store/FileSysStore";
+import ApiUtils from 'app/utils/api-util';
 
 const renderFileName = (txt, record) => {
   const filename = record.name;
@@ -31,19 +34,42 @@ const renderModTime = (txt, record) => {
   );
 };
 
+const onDeleteFile = (self, record) => async () => {
+  const currentPath = self.props.fileSysStore.currentPath;
+  const filename = record.name;
+  const response = await ApiUtils.tokenDelete(
+    '/api/fs/delete',
+    {
+      filePath: currentPath + '/' + filename,
+    }
+  );
+  if (response.errCode) {
+    throw new Error();
+  }
+  // else
+  message.success(`File ${filename} removed.`);
+  await self.props.fileSysStore.fetchDirectoryAsync(currentPath);
+};
+
 const renderOperations = (self) => (txt, record) => {
   const btns = [];
-  if (record.permission[0] !== 'd') {
+  if (record.isFile) {
     btns.push(
-      <Button type="primary" key="download">
-        <Icon type="download" />
-      </Button>
+      <a
+        target="_blank"
+        href={`/api/fs/downloadFile?filename=${record.name}&dst=${self.props.fileSysStore.currentPath}`}
+        key="download"
+      >
+        <Button type="primary">
+          <Icon type="download" />
+        </Button>
+      </a>
     );
   } else {
     btns.push(
-      <Button type="primary" key="download" disabled>
-        <Icon type="download" />
-      </Button>
+       <Button type="primary" key="download" disabled>
+          <Icon type="download" />
+       </Button>
     );
   }
   btns.push(
@@ -57,9 +83,11 @@ const renderOperations = (self) => (txt, record) => {
     </Button>
   );
   btns.push(
-    <Button key="delete">
-      <Icon type="delete" />
-    </Button>
+    <Popconfirm title="Are you sure delete this file?" onConfirm={onDeleteFile(self, record)}>
+      <Button key="delete">
+        <Icon type="delete" />
+      </Button>
+    </Popconfirm>
   );
   return (
     <Button.Group>
@@ -97,7 +125,7 @@ class FSView extends React.Component {
         className="fs-table"
         dataSource={fileSysStore.filesInDirectory}
         columns={FSView.getColumns(this)}
-        rowKey={(record) => record.path}
+        rowKey={(record, idx) => `${record.path}_${idx}`}
         loading={fileSysStore.currentPathIsLoading}
       />
     );
