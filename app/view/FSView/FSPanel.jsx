@@ -163,7 +163,7 @@ class FSPanel extends React.Component {
                 <span>Go Forward</span>
               </Button>
               <a href={this.props.fileSysStore.parentDirectoryPath ?
-                `${this.props.fileSysStore.parentDirectoryPath}` : ''
+                `/fs?path=${this.props.fileSysStore.parentDirectoryPath}` : ''
               }>
                 <Button type="default" disabled={!this.props.fileSysStore.parentDirectoryPath}>
                   <Icon type="up" />

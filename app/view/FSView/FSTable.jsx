@@ -1,13 +1,14 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Table, Icon, Button, Popconfirm, message } from 'antd';
+import { Table, Icon, Button, Popconfirm, message, Popover } from 'antd';
 import filesize from 'filesize';
 import moment from 'moment';
 
 import _ from 'lodash';
 
-import FileSysStore from "app/store/FileSysStore";
+// import FileSysStore from 'app/store/FileSysStore';
 import ApiUtils from 'app/utils/api-util';
+import RenameFilePopoverContent from './RenameFilePopoverContent.jsx';
 
 const renderFileName = (txt, record) => {
   const filename = record.name;
@@ -51,13 +52,34 @@ const onDeleteFile = (self, record) => async () => {
   await self.props.fileSysStore.fetchDirectoryAsync(currentPath);
 };
 
+const onClickRename = (self, record) => async (newFileName) => {
+  const oldName = self.props.fileSysStore.currentPath + '/' + record.name;
+  const newName = self.props.fileSysStore.currentPath + '/' + newFileName;
+  const response = await ApiUtils.tokenPut('/api/fs/rename', {
+    oldName,
+    newName,
+  });
+  if (response.errCode) {
+    message.error('Rename file failed!');
+    throw new Error(response);
+  }
+  // if success
+  message.success('Rename file success.');
+  await self.props.fileSysStore.fetchDirectoryAsync(self.props.fileSysStore.currentPath);
+};
+
 const renderOperations = (self) => (txt, record) => {
   const btns = [];
+  let p = self.props.fileSysStore.currentPath;
+  if (p[p.length - 1] !== '/') {
+    p = p + '/';
+  }
   if (record.isFile) {
+    let link = `/api/fs/downloadFile?filename=${record.name}&dst=${p}`;
     btns.push(
       <a
         target="_blank"
-        href={`/api/fs/downloadFile?filename=${record.name}&dst=${self.props.fileSysStore.currentPath}`}
+        href={link}
         key="download"
       >
         <Button type="primary">
@@ -78,13 +100,23 @@ const renderOperations = (self) => (txt, record) => {
     </Button>
   );
   btns.push(
-    <Button key="copy">
-      <Icon type="copy" />
-    </Button>
+    <Popover
+      content={<RenameFilePopoverContent onOK={onClickRename(self, record)}/>}
+      trigger="click"
+      key="rename"
+    >
+      <Button>
+        <Icon type="edit" />
+      </Button>
+    </Popover>
   );
   btns.push(
-    <Popconfirm title="Are you sure delete this file?" onConfirm={onDeleteFile(self, record)}>
-      <Button key="delete">
+    <Popconfirm
+      title="Are you sure delete this file?"
+      onConfirm={onDeleteFile(self, record)}
+      key="delete"
+    >
+      <Button>
         <Icon type="delete" />
       </Button>
     </Popconfirm>
